@@ -20,6 +20,8 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 
 public class ConscryptJetty {
 
+    // When true conscrypt will be used, bit dirty making it static
+    public static boolean USE_CONSCRYPT = true;
     
     public static void main(String[] args) throws Exception {
 
@@ -32,15 +34,12 @@ public class ConscryptJetty {
         https.addCustomizer(new SecureRequestCustomizer());
         SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
         
-        OpenSSLProvider openSSLProvider = new OpenSSLProvider();
-        java.security.Security.addProvider(openSSLProvider);
-        openSSLProvider = new OpenSSLProvider();
-        java.security.Security.addProvider(openSSLProvider);
+        if(USE_CONSCRYPT) {
+            OpenSSLProvider openSSLProvider = new OpenSSLProvider();
+            java.security.Security.addProvider(openSSLProvider);
+            sslContextFactory.setProvider("Conscrypt");
+        }
         
-        sslContextFactory.setProvider("Conscrypt");
-        
-        openSSLProvider = new OpenSSLProvider();
-        java.security.Security.addProvider(openSSLProvider);
         
         sslContextFactory.setKeyStorePath("src/test/resources/ssl/server-keystore.jks");
         sslContextFactory.setKeyStorePassword("serverkeypass");
