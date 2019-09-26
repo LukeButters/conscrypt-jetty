@@ -1,9 +1,23 @@
 # conscrypt-jetty
 Presents an issue when using conscrypt and jetty together
 
-Run the test (or just run mvn clean install).
+# Run it
+## First build it with:
+
+```
+mvn install dependency:copy-dependencies
+```
+
+## then run the web server:
+
+```
+java -XX:NativeMemoryTracking=summary -Xmx512m -Xms512m -Dcom.sun.management.jmxremote -Djava.net.preferIPv4Stack=true -XX:+UseG1GC -XX:+UseStringDeduplication -XX:MaxMetaspaceSize=256m -XX:CompressedClassSpaceSize=256m -cp target/dependency/*:target/jetty-conscrypt-fifo-0.0.1-SNAPSHOT.jar com.luke.ConscryptJetty
+```
+
 
 The test will start a jetty server and tell you the port it is listening on, the server will stay open listening to requests.
+
+# Make requests to the server
 
 Make a stack of http 1.0 requests.
 
@@ -15,16 +29,31 @@ src/test/resources/example.sh <port>
 
 When you run the test it will tell you which port, and give you the command to run.
 
-Find the pid of jetty (java) and run lsof on it, you will see lots of entries like:
+# Memory usage
+Find the pid of jetty (java) and discover the memory usage with:
 ```
-java    31296 luke *798r     FIFO               0,12       0t0 6524803 pipe
-java    31296 luke *799w     FIFO               0,12       0t0 6524803 pipe
-java    31296 luke *800r     FIFO               0,12       0t0 6524805 pipe
-java    31296 luke *801w     FIFO               0,12       0t0 6524805 pipe
-java    31296 luke *876r     FIFO               0,12       0t0 6504834 pipe
-java    31296 luke *877w     FIFO               0,12       0t0 6504834 pipe
-java    31296 luke *878r     FIFO               0,12       0t0 6503671 pipe
-java    31296 luke *879w     FIFO               0,12       0t0 6503671 pipe
+./src/test/resources/jmemuse.sh <PID>
 ```
 
-If you disable the use of conscrypt you will not see them.
+Example output:
+```
+./src/test/resources/jmemuse.sh 2314
+Thu 26 Sep 16:54:58 AEST 2019
+ 2314 1023164
+```
+
+the number on the left is the PID, the number on the right is RSS reported by ps.
+
+It will print the memory usage every 10s.
+
+very very slowly you will see the memory grow forever. It might take days for this
+to finish.
+
+# Sample output
+Look under the sample folder to see some sample output and a graph I created by:
+running:
+```
+cat sample/date_and_mem.txt | grep -v "AEST" | cut -d " " -f2 | nl > /tmp/memory_over_time.png
+gnuplot
+plot '/tmp/memory_over_time.png'
+```

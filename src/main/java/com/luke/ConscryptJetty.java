@@ -64,15 +64,18 @@ public class ConscryptJetty {
             
             System.out.println(serverRoot);
             
-            System.out.println("Make non stop requests to the server, run lsof and you should see lots of FIFO open files.");
-            
+            System.out.println("Make non stop requests to the server, and watch the memory leak.");
             System.out.println("You could run:");
             System.out.println("src/test/resources/example.sh " + port);
             System.out.println("To run a heap of requests against the server.");
-            
-            Thread.sleep(10000000);
-
-            
+            System.out.println("Version 2");
+            while(true) {
+                try {
+                    Thread.sleep(Long.MAX_VALUE);
+                } catch (Throwable e) {
+                    // yeah nah
+                }
+            }
         } finally {
             server.stop();
         }
