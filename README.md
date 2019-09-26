@@ -57,3 +57,6 @@ cat sample/date_and_mem.txt | grep -v "AEST" | cut -d " " -f2 | nl > /tmp/memory
 gnuplot
 plot '/tmp/memory_over_time.png'
 ```
+
+# See also
+https://github.com/google/conscrypt/issues/711
