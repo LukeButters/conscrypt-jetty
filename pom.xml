@@ -6,7 +6,7 @@
   
   <properties>
     <java.version>11</java.version>
-    <version.jetty>9.4.19.v20190610</version.jetty>
+    <version.jetty>10.0.10</version.jetty>
   </properties>
   
   <build>
